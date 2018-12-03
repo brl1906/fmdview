@@ -6,6 +6,7 @@ from configparser import ConfigParser
 import datetime as dt
 import os
 import subprocess
+import time
 import warnings
 
 import dash
@@ -19,6 +20,7 @@ import plotly.graph_objs as go
 warnings.filterwarnings('ignore')
 
 subprocess.call(["dw", "configure"])
+time.sleep(10)
 #subprocess.call(["export", "DW_AUTH_TOKEN=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OmJybDE5MDYiLCJpc3MiOiJhZ2VudDpicmwxOTA2Ojo0MGM4ZWNlYy00OGEwLTQzZjItOGQ3OC0zM2Q0YjI4OGY5NDIiLCJpYXQiOjE1NDI3MzkxMTcsInJvbGUiOlsidXNlcl9hcGlfcmVhZCIsInVzZXJfYXBpX3dyaXRlIl0sImdlbmVyYWwtcHVycG9zZSI6dHJ1ZX0.Y6z3aRAzHnCs8GAemcxOxhWOAIP_Dhr04a_ehX3CmmHGmNlmcA7mWL9tkGu6XoIVLWGXtV_hynqvz_oyoXXn2w"])
 
 # load mapbox token  FAILED IN HEROKU
