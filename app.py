@@ -17,10 +17,12 @@ import plotly.graph_objs as go
 
 warnings.filterwarnings('ignore')
 
-# load mapbox token
-parser = ConfigParser()
-parser.read('config.ini')
-fmd_kpi_mapbox_token = parser.get('MapboxToken','token')
+# load mapbox token  FAILED IN HEROKU
+# parser = ConfigParser()
+# parser.read('config.ini')
+#fmd_kpi_mapbox_token = parser.get('MapboxToken','token')
+
+fmd_kpi_mapbox_token = 'pk.eyJ1IjoiYnJsMTkwNiIsImEiOiJjanA2ZnJ4ZmwwbWxlM3ZtbngwYjNwdDA2In0.9ViGiEb4fmLC-wXUEGYogw'
 
 app = dash.Dash('FMDView')
 app.config.supress_callback_exceptions = True
