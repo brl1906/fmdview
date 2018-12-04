@@ -19,16 +19,15 @@ import plotly.graph_objs as go
 
 warnings.filterwarnings('ignore')
 
-subprocess.call(["dw", "configure"])
-time.sleep(10)
+# subprocess.call(["dw", "configure"])
 #subprocess.call(["export", "DW_AUTH_TOKEN=eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwcm9kLXVzZXItY2xpZW50OmJybDE5MDYiLCJpc3MiOiJhZ2VudDpicmwxOTA2Ojo0MGM4ZWNlYy00OGEwLTQzZjItOGQ3OC0zM2Q0YjI4OGY5NDIiLCJpYXQiOjE1NDI3MzkxMTcsInJvbGUiOlsidXNlcl9hcGlfcmVhZCIsInVzZXJfYXBpX3dyaXRlIl0sImdlbmVyYWwtcHVycG9zZSI6dHJ1ZX0.Y6z3aRAzHnCs8GAemcxOxhWOAIP_Dhr04a_ehX3CmmHGmNlmcA7mWL9tkGu6XoIVLWGXtV_hynqvz_oyoXXn2w"])
 
 # load mapbox token  FAILED IN HEROKU
-# parser = ConfigParser()
-# parser.read('config.ini')
-#fmd_kpi_mapbox_token = parser.get('MapboxToken','token')
+parser = ConfigParser()
+parser.read('config.ini')
+fmd_kpi_mapbox_token = parser.get('MapboxToken','token')
 
-fmd_kpi_mapbox_token = 'pk.eyJ1IjoiYnJsMTkwNiIsImEiOiJjanA2ZnJ4ZmwwbWxlM3ZtbngwYjNwdDA2In0.9ViGiEb4fmLC-wXUEGYogw'
+#fmd_kpi_mapbox_token = 'pk.eyJ1IjoiYnJsMTkwNiIsImEiOiJjanA2ZnJ4ZmwwbWxlM3ZtbngwYjNwdDA2In0.9ViGiEb4fmLC-wXUEGYogw'
 
 app = dash.Dash('FMDView')
 app.config.supress_callback_exceptions = True
