@@ -2,7 +2,7 @@
 FMDView is an interactive dashboard to support management, analysis for new program development or process improvement opportunities and outcome budget development.   
 
 ## Output
-![dashboard](https://blima06.pythonanywhere.com/)
+[dashboard](https://blima06.pythonanywhere.com/)
 
 
 ## Built Primarily With
