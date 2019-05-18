@@ -113,7 +113,56 @@ def clean_data(dframe):
     return dframe
 
 
-data = get_data(dataset_name='dgs-kpis/fmd-maintenance',
-                dataframe_name='archibus_maintenance_data')
+def make_map_dframe(dframe, excelfile, skipnrows=6):
+    """Generate dataframe for mapping charts with archibus data.
+    
+    Parameters
+    ----------
+    dframe:     pandas dataframe
+            the dataframe returned from the clean_data function
+            in the data.py module
+    
+    excelfile:  file object
+            excel file with the latitude and longitude data required
+            to identify the location of markers for archibus data.
+    
+    skipnrows:  int
+            the number of rows to skip when reading in excel sheet
+            for conversion to pandas dataframe.
+            
+    Returns
+    -------
+    Pandas Dataframe
+    
+    Example
+    -------
+    >>> make_map_dframe(dframe=df, excelfile='file.xlsx', skipnrows=5)
+    
+    """
+    
+    df = pd.read_excel(excelfile, skiprows=skipnrows)
+    df.columns = ['bl_id','name','addr','site_id','latitude','longitude']
+    geo_dict = {}
+    for bld in df['bl_id'].unique():
+        geo_dict[bld] = {'latitude': df.loc[df['bl_id'] == bld]['latitude'].values[0],
+                        'longitude': df.loc[df['bl_id'] == bld]['longitude'].values[0],
+                        'bld_name': df.loc[df['bl_id'] == bld]['name'].values[0]}
+
+    dframe['latitude'] = dframe['bl_id'].apply(lambda x: geo_dict[x]['latitude'])
+    dframe['longitude'] = dframe['bl_id'].apply(lambda x: geo_dict[x]['longitude'])
+    dframe['bld_name'] = dframe['bl_id'].apply(lambda x: geo_dict[x]['bld_name'])
+
+    return dframe
+
+#############################################################
+                ## MODULE VARIABLES ##
+#############################################################
+
+data = get_data(
+    dataset_name='dgs-kpis/fmd-maintenance',
+    dataframe_name='archibus_maintenance_data')
+
 dframe = clean_data(data)
 
+map_dframe = make_map_dframe(
+    dframe=dframe, excelfile='data/building_lat_longs.xlsx')
