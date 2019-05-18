@@ -111,7 +111,7 @@ def create_map_plotting_df(dataframe, file, nrows2skip):
 
     return dataframe
 
-lat_lon_df = create_map_plotting_df(dataframe=df, file='Data/building_lat_longs.xlsx',
+lat_lon_df = create_map_plotting_df(dataframe=df, file='data/building_lat_longs.xlsx',
                    nrows2skip=6)
 
 # CREATE CHARTS FOR DASHBOARD
