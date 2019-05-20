@@ -2,9 +2,11 @@ import datadotworld as dw
 import numpy as np
 import pandas as pd
 
-#############################################################
-                ## HELPER FUNCTIONS ##
-#############################################################
+################################################################################
+################################################################################
+                            ## HELPER FUNCTIONS ##
+################################################################################
+################################################################################
 
 def weekday_name(integer):
     """Convert integer from 0-6 to return corresponding weekday name.
@@ -82,15 +84,17 @@ def get_fiscalyear(column, fiscalyear_start=7):
 
     Returns
     --------
-    Pandas Series: Series or column containing data for 4 digit number representing fiscal year.
+    Pandas Series: Series or column containing data for 4 digit number
+                   representing fiscal year.
 
     Examples
     --------
     >>> get_fiscalyear(df['request_date']) # assumes July fiscal year start
 
-    >>> get_fiscalyear(df['request_date'], fiscalyear_start=3) # assumes March fiscal year start
+    >>> get_fiscalyear(df['request_date'], fiscalyear_start=3) # assumes March
+        fiscal year start
 
-    >>> get_fiscalyear(df['request_date'], 10) # assumes October fiscal year start
+    >>> get_fiscalyear(df['request_date'], 10) # October fiscal year start
     """
 
     fiscal_year = [date.year + 1 if date.month >= fiscalyear_start
@@ -99,9 +103,11 @@ def get_fiscalyear(column, fiscalyear_start=7):
     return fiscal_year
 
 
-#############################################################
-                ## REQUEST DATA ##
-#############################################################
+################################################################################
+################################################################################
+                            ## REQUEST DATA ##
+################################################################################
+################################################################################
 
 def get_data(dataset_name, dataframe_name):
     """Request data from datadotworld API, and returns pandas dataframe.
@@ -140,8 +146,9 @@ def clean_data(dframe):
     '''
 
     '''
-    target_columns = (['wo_id','date_completed','prob_type','bl_id','completed_by',
-                        'date_requested','time_completed','time_start','time_end'])
+    target_columns = (['wo_id','date_completed','prob_type','bl_id',
+                        'completed_by','date_requested','time_completed',
+                        'time_start','time_end'])
 
     if isinstance(dframe, pd.core.frame.DataFrame):
         try:
@@ -206,9 +213,11 @@ def make_map_dframe(dframe, excelfile, skipnrows=6):
 
     return dframe
 
-#############################################################
-                ## MODULE VARIABLES ##
-#############################################################
+################################################################################
+################################################################################
+                            ## MODULE VARIABLES ##
+################################################################################
+################################################################################
 
 data = get_data(
     dataset_name='dgs-kpis/fmd-maintenance',
