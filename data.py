@@ -143,7 +143,28 @@ def get_data(dataset_name, dataframe_name):
 
 
 def clean_data(dframe):
-    '''
+    '''Perform reindexing, cleaning and feature generation on dataframe for
+    dashboard. 
+    
+    Parameters
+    ----------
+    dframe:   Pandas Dataframe
+            Expects pandas dataframe returned from the get_data function. The
+            data.py module structure separates the request from the preparation
+            of the data into two functions: get_data and this clean_data
+    
+    Returns
+    -------
+    Pandas Dataframe:  Returns a new dataframe with releveant Series converted 
+                       to datetime objects, adds relevant features for duration
+                       and resets the index. 
+    
+    Example
+    -------
+    >>> data = get_data(dataset_name='performance_indicators',
+                        dataframe_name='public_safety')
+                        
+        clean_data(dframe=data)
 
     '''
     target_columns = (['wo_id','date_completed','prob_type','bl_id',
