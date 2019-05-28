@@ -588,3 +588,111 @@ initialized because proper parameter was not passed.""")
 
 ################################################################################
 ################################################################################
+def duration_vs_volume(dframe, fiscalyear=''):
+    """
+    """
+
+     # filter out still open work orders
+    if fiscalyear == '':
+        filtered_df = dframe[(dframe['date_completed'].notnull())]
+        title = 'FY{}-FY{} Duration & Volume<br>Distribution Density by Type<br><i>(bubblesize: % durations > type avg)</i>'.format(
+        min(dframe['fiscal_year_requested']),max(dframe['fiscal_year_requested']))
+    else:
+        filtered_df = dframe[(dframe['date_completed'].notnull()) &
+                    (dframe['fiscal_year_requested'] == fiscalyear)]
+        title = 'FY{} Duration & Volume<br>Distribution Density by Type<br><i>(bubblesize: % durations > type avg)</i>'.format(fiscalyear)
+
+    filtered_df['completed_month_name'] = filtered_df['date_completed'].apply(lambda x: month_name(x.month))
+    problems = filtered_df['prob_type'].value_counts().index.tolist()
+    prob_type_counts, prob_type_avg_duration = [],[]
+
+    for problem_type in problems:
+        prob_type_counts.append(filtered_df[filtered_df['prob_type'] == problem_type]['wo_id'].count())
+        prob_type_avg_duration.append(filtered_df[filtered_df['prob_type'] == problem_type]['duration'].mean().days)
+
+    # create list for sizing bubbles on chart based on pct of the work orders
+    # in that problem type that exceed the average duration for that type
+    pct_workorders_exceeding_mean_duration_for_type = {}
+    for prob in problems:
+        avg = filtered_df[filtered_df['prob_type'] == prob]['duration'].mean().days
+        number_exceding_mean_duration = filtered_df[(filtered_df['prob_type'] == prob) &
+                         (filtered_df['duration'].dt.days > avg)]['duration'].count()
+        count_ = filtered_df[(filtered_df['prob_type'] == prob)]['wo_id'].count()
+        pct_workorders_exceeding_mean_duration_for_type[prob] = number_exceding_mean_duration / count_ * 100
+
+    x = prob_type_counts
+    y = prob_type_avg_duration
+    data = [
+
+    go.Scatter(
+        x = prob_type_counts,
+        y = prob_type_avg_duration,
+        xaxis = 'x',
+        yaxis = 'y',
+        name = 'problem type',
+        mode = 'markers',
+        text = ['{}:<br>{:.0f}% > avg duration'.format(key,val) for key,val in pct_workorders_exceeding_mean_duration_for_type.items()],
+        hoverinfo = 'text',
+        marker = dict(
+            color = '#D4395B',
+            size = [val / 3.5 for key,val in pct_workorders_exceeding_mean_duration_for_type.items()]),
+        opacity = .7
+    ),
+    go.Histogram(
+        y = prob_type_avg_duration,
+        xaxis = 'x2',
+        nbinsy = 25,
+        name = 'avg days',
+        marker = dict(
+            color = '#CCCCCC')
+                ),
+    go.Histogram(
+        x = prob_type_counts,
+        yaxis = 'y2',
+        name = 'type volume',
+        nbinsx = 25,
+        marker = dict(
+            color = '#CCCCCC')
+                )
+            ]
+
+    layout = go.Layout(
+        title = title,
+        autosize = True,
+        xaxis = dict(
+            title = 'request volume (by problem type)',
+            zeroline = False,
+            domain = [0,0.85],
+            showgrid = False
+        ),
+        yaxis = dict(
+            title = 'avg duration (days)',
+            zeroline = False,
+            domain = [0,0.85],
+            showgrid = False
+        ),
+        xaxis2 = dict(
+            zeroline = False,
+            domain = [0.85,1],
+            showgrid = False
+        ),
+        yaxis2 = dict(
+            zeroline = False,
+            domain = [0.85,1],
+            showgrid = False
+        ),
+
+        bargap = .01,
+        hovermode = 'closest',
+        showlegend = False,
+        margin = {'l': 75, 't':80,
+                 'b': 80,'r': 80},
+        font = {'color': '#CCCCCC'},
+        titlefont = {'color': '#CCCCCC',
+                    'size': 14},
+
+        plot_bgcolor = '#303939',
+        paper_bgcolor = '#303939',
+                    )
+    fig = {'data':data, 'layout':layout}
+    return fig
