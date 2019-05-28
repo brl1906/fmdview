@@ -376,7 +376,7 @@ initialized because proper parameter was not passed.""")
                            (df['completed_day_name'] == day)]['wo_id'].count())
 
         else:
-            chart_title = 'Percentage of Work Orders Closed Monthly'
+            chart_title = 'Percentage of Work Orders Closed Daily'
             for year in df['fiscal_year_completed'].unique():
                 z_dict[year] = []
                 for day in x:
@@ -386,6 +386,105 @@ initialized because proper parameter was not passed.""")
                     df[df['fiscal_year_completed'] == year]['wo_id'].count() * 100)
 
 
+    trace = go.Heatmap(
+        z = [value for value in z_dict.values()],
+        y = ['FY {}'.format(int(year)) for year in z_dict.keys()],
+        x = x,
+        colorscale = colorscale)
+
+    layout = go.Layout(
+        hovermode = 'closest',
+        font = {'color': '#CCCCCC'},
+        titlefont = {'color': '#CCCCCC',
+                    'size': 14},
+        title = chart_title,
+        margin = {'r':55, 'b':70,
+                 'l': 70, 't': 45},
+        plot_bgcolor = '#303939',
+        paper_bgcolor = '#303939'
+                        )
+    fig = {'data':[trace], 'layout':layout}
+    return fig
+
+# ---- count and percentage of requests closed by month ---- #
+def month_completion(dframe, z_values='count',colorscale='Portland'):
+    """Return heatmap vizualizing the count or percentage of work orders
+    closed each weekday for each fiscal year.
+
+    Parameters
+    ----------
+    dframe:   Pandas Dataframe
+            Expects the dataframe of archibus maintenance work order data
+            returned from data.py module
+
+    z_values: Str (optional)
+            Sets the calculation and dislpay method for the z values associated
+            with the heatmap. Available options include: 'count' & 'percentage'.
+            The default value will return how many work orders were completed on
+            each weekday within a fiscal year while 'percentage' will return the
+            percentage of work orders closed on a weekday out of all work
+            ordrers closed that year.    For example-- 804 work orders were
+            completed on Monday in 2018 vs 12% of all work orders completed in
+            2018 were completed on Mondays.
+
+    colorscale: Str (default value: 'Portland')
+            The colorscale style for the heatmap. Availalbe colorscale options
+            can be found in the Plotly or Matplotlib documentation.
+
+    Returns
+    -------
+    Dict:  Returns a dictionary with keys 'data' and 'layout' corresponding to
+           a Plotly figure object.  {'data':traces, 'layout':layout}
+
+    Example
+    -------
+    >>> weekday_completion(dframe=dframe)
+
+    >>> weekday_completion(dframe, z_values='percentage')
+    """
+
+    # filter out still open work orders
+    df = dframe[dframe['date_completed'].notnull()]    
+    df['completed_month_name'] = (df['date_completed'].
+                                  apply(lambda x: month_name(x.month)))
+
+    z_dict = {}
+    x = ['January','February','March','April','May','June','July','August',
+         'September','October','November','December']
+
+    ## Switch data returned for chart based on z_values parameter
+    ## to control for chart views and data based on parameters occur here
+    valid_zparams = ['count','percentage']
+    if z_values not in valid_zparams:
+        print(
+        """Error: Valid values for z_values parameter include: "count" &
+"percentage". Will generate UnboundLocalError as variables in layout were not
+initialized because proper parameter was not passed.""")
+
+    else:
+        if z_values == 'count':
+            chart_title = 'Work Orders Closed Monthly'
+            for year in df['fiscal_year_completed'].unique():
+                z_dict[year] = []
+                for month in x:
+                    z_dict[year].append(
+                        df[(df['fiscal_year_completed'] == year) &
+                           (df['completed_month_name'] == month)]['wo_id'].count())
+        
+        elif z_values == 'percentage':
+            chart_title = 'Percentage of Work Orders Closed Monthly'
+            for year in df['fiscal_year_completed'].unique():
+                z_dict[year] = []
+                for month in x:
+                    z_dict[year].append(
+                    df[(df['fiscal_year_completed'] == year) &
+                      (df['completed_month_name'] == month)]['wo_id'].count() /
+                    df[df['fiscal_year_completed'] == year]['wo_id'].count() * 100)
+                    
+        else:
+            #### ADD WARNING HERE ABOUT VALID Z_VALUES PARAMETERS ###
+            pass 
+        
     trace = go.Heatmap(
         z = [value for value in z_dict.values()],
         y = ['FY {}'.format(int(year)) for year in z_dict.keys()],
