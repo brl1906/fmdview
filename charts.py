@@ -409,7 +409,7 @@ initialized because proper parameter was not passed.""")
 # ---- count and percentage of requests closed by month ---- #
 def month_completion(dframe, z_values='count',colorscale='Portland'):
     """Return heatmap vizualizing the count or percentage of work orders
-    closed each weekday for each fiscal year.
+    closed each month for each fiscal year.
 
     Parameters
     ----------
@@ -422,10 +422,10 @@ def month_completion(dframe, z_values='count',colorscale='Portland'):
             with the heatmap. Available options include: 'count' & 'percentage'.
             The default value will return how many work orders were completed on
             each weekday within a fiscal year while 'percentage' will return the
-            percentage of work orders closed on a weekday out of all work
+            percentage of work orders closed in each month out of all work
             ordrers closed that year.    For example-- 804 work orders were
-            completed on Monday in 2018 vs 12% of all work orders completed in
-            2018 were completed on Mondays.
+            completed in March of 2018 vs 12% of all work orders completed in
+            2018 were completed in March.
 
     colorscale: Str (default value: 'Portland')
             The colorscale style for the heatmap. Availalbe colorscale options
