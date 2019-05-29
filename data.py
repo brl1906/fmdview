@@ -58,6 +58,8 @@ def month_name(integer):
                    'July','August','September','October','November','December']
     return month_names[integer-1]
 
+
+
 def get_fiscalyear(column, fiscalyear_start=7):
     """Create conversion column that reads dates and returns fiscal year.
 
@@ -102,6 +104,74 @@ def get_fiscalyear(column, fiscalyear_start=7):
 
     return fiscal_year
 
+
+
+def filter_fiscalyear(dframe, column, fiscalyear):
+    """Return filtered dataframe with a view of data for a single fiscalyear.
+    
+    Function uses a fiscalyear parameter to slice a dataframe and provide
+    a dataset that excludes data for all fiscalyears except the one passed. It
+    accepts an integer representing a  4-digit year present in the target column. 
+    
+    Parameters
+    ----------
+    dframe:      Pandas Dataframe
+    
+    column:      Str  
+            Column name or Pandas Series containing the fiscalyear data
+    
+    fiscalyear:  Int 
+            4 digit year of one of the fiscalyears present in target column. 
+    
+    Returns
+    -------
+    Pandas Dataframe  
+    
+    Example
+    -------
+    >>> filter_fiscalyear(dframe, 'fy_completed')
+    
+    >>> filter_fiscalyear(dframe, 'FYear_Requested', 2015)
+    """
+    validated_year = validate_fiscalyear(dframe[column], fiscalyear)
+    
+    if validated_year:
+        try:
+            dataframe = dframe[(dframe[column] == fiscalyear)]
+            return dataframe
+        except Exception as e:
+            print(e)  # convert to log
+    else:
+        return validated_year 
+
+    
+    
+def remove_open_workorders(dframe, column='date_completed'):
+    """Return filtered dataframe removing workorder data missing completion dates.
+    
+    Parameters
+    ----------
+    dframe:   Pandas Dataframe
+    
+    column:   Str 
+            Name of datetime object column containing dates of work order
+            completion. 
+    Returns
+    -------
+    Pandas Dataframe
+    
+    Example
+    -------
+    >>> remove_open_workorders(dframe)
+    """
+    
+    dataframe = dframe[(dframe[column].notnull())]
+    return dataframe
+
+
+    
+    
+    
 
 ################################################################################
 ################################################################################
