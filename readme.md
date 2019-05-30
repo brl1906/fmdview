@@ -6,7 +6,7 @@ FMDView is an interactive dashboard to support management, analysis for new prog
 
 
 ## Built With
-[Plotly](https://plot.ly/python/), [Dash](https://dash.plot.ly/installation?_ga=2.84375066.205455047.1557528074-1967621533.1556584029), [Pandas](https://pandas.pydata.org/), [PythonAnywhere](https://www.pythonanywhere.com/)
+[Plotly](https://plot.ly/python/), [Dash](https://dash.plot.ly/installation?_ga=2.84375066.205455047.1557528074-1967621533.1556584029), [Pandas](https://pandas.pydata.org/), Deployed with [PythonAnywhere](https://www.pythonanywhere.com/)
 
 ## Using the dashboard code
 
