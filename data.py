@@ -145,6 +145,88 @@ def filter_fiscalyear(dframe, column, fiscalyear):
         return validated_year 
 
     
+
+def null_nonexistent(series):
+    """Performs check to see if a column has null values and returns boolean.
+    
+    Parameters
+    ----------
+    series:      Pandas Series
+            The column name of a dataframe
+    
+    Returns
+    -------
+    Boolean:  Returns True if there are no null values in column, False otherwise.
+    
+    Example
+    -------
+    >>> null_nonexistent(dataframe.index) # returns True
+    
+    """
+    if series.isnull().sum() > 0:
+        return False
+    else:
+        return True
+    
+
+def ontime(dframe, problemtype_column='prob_type', duration_column='duration'):
+    """Get information by type, on count, average duration and percentage of workorders 
+    closed ontime.
+    
+    Returns tupple of 3 Pandas Series objects with information on the percentage of
+    workorders on time for each problem type. Information returned at each position in 
+    tupple is: 1) number of requests by problem type, 2) mean duration by problem type
+    3) percentage of workorders ontime by problem type.
+    
+    Tupple allows for unpacking for elements required to create charts on workorders 
+    closed ontime. For example, values for x, y and size of a scatter plot can be passed 
+    as x = ontime(dframe)[0], y = ontime(dframe)[1], size = ontime(dframe)[2]
+    
+    Parameters
+    ----------
+    dframe:              Pandas Dataframe
+                Expects a dataframe that has had all open workorders removed. 
+                Filtering out open workorders removes null values from completion 
+                and duration columns to support calculation of groupby and average 
+                taking on dataframe.
+            
+    problemtype_column:  Str 
+                Name of column containing data on the workorder type category.
+            
+    duration_column:     Str 
+                Name of datetime type column containing duration for each workorder.
+    
+    Returns
+    -------
+    Tupple:   Return object has 3 items in tupple: 
+             (total_volume_bytype, avg_duration_bytype, percentage_ontime)
+             
+    Example
+    -------
+    >>> ontime(df,'prob_type','duration') # if duration has no null values returns tupple
+     
+    >>> ontime(df, 'ptypes', 'drtn') # if null values present returns string:
+                                       'Check "drtn" column, ensure there are no null values.'    
+    """
+    if null_nonexistent(dframe[duration_column]):
+        try:
+            dframe['days_integer'] = dframe[duration_column].dt.days.astype(int)
+            dframe['average_duration'] = dframe.groupby(problemtype_column)['days_integer'].transform('mean')
+            dframe['ontime'] = np.where(dframe['days_integer'] <= dframe['average_duration'], 1, 0)
+
+            avg_duration_bytype = dframe.groupby(problemtype_column)['average_duration'].mean()
+            number_ontime_bytype = dframe.groupby(problemtype_column)['ontime'].sum()
+            total_volume_bytype = dframe.groupby(problemtype_column)['ontime'].count()
+            percentage_ontime = (number_ontime_bytype / total_volume_bytype) * 100
+            
+            return (total_volume_bytype, avg_duration_bytype, percentage_ontime)
+        
+        except Exception as e:
+            print(e) # convert to log
+    else:
+        return 'Check "{}" column, ensure there are no null values.'.format(duration_column)
+    
+    
     
 def remove_open_workorders(dframe, column='date_completed'):
     """Return filtered dataframe removing workorder data missing completion dates.
