@@ -106,6 +106,43 @@ def get_fiscalyear(column, fiscalyear_start=7):
 
 
 
+class ValueNotTypeIntStrListFloat(ValueError):
+    pass
+
+def valid_instance(value):
+    """Checks whether a value is instance of str, int,list or float and returns Boolean.
+    
+    Parameters
+    ----------
+    value:     str int list or float
+            Any value passed to function such as 8, '8', [8,'8'], or 8.0
+    
+    Returns
+    -------
+    Boolean:   True if value parameter is of type str, int, list or float, 
+               and returns False otherwise.
+               
+    Example:
+    --------
+    >>>       valid_instance("I'm good!") # returns True
+    
+    >>>       valid_instance({'name':'Joe Budden'}) # raises Error 
+    """
+    
+    if (isinstance(value, str)  or
+        isinstance(value, int)  or
+        isinstance(value, list) or 
+        isinstance(value, float)):
+        
+        print(True)
+    else:
+        ### Valid value types include: [str, int, list, float] 
+        raise ValueNotTypeIntStrListFloat(value)
+    
+
+
+
+
 def filter_fiscalyear(dframe, column, fiscalyear):
     """Return filtered dataframe with a view of data for a single fiscalyear.
     
