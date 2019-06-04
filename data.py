@@ -107,6 +107,7 @@ def get_fiscalyear(column, fiscalyear_start=7):
 
 
 class ValueNotTypeIntStrListFloat(ValueError):
+    """Custom exception for invalid value."""
     pass
 
 def valid_instance(value):
