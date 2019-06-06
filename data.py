@@ -112,106 +112,68 @@ class ValueNotTypeFloatIntListSetStr(ValueError):
 
 def valid_instance(value):
     """Checks whether a value is instance of float,int,list,set or str and returns Boolean.
-    
+
     Parameters
     ----------
     value:     float int list set or str
             Any value passed to function such as 8, '8', [8,'8'], 8.0 or set([8,'8'])
-    
+
     Returns
     -------
-    Boolean:   True if value parameter is of type float, int, list set or str, 
+    Boolean:   True if value parameter is of type float, int, list set or str,
                and returns False otherwise.
-               
+
     Example:
     --------
     >>>       valid_instance("I'm good!") # returns True
-    
-    >>>       valid_instance({'name':'Joe Budden'}) # raises Error 
+
+    >>>       valid_instance({'name':'Joe Budden'}) # raises Error
     """
-    
+
     if (isinstance(value, float)  or
         isinstance(value, int)    or
-        isinstance(value, list)   or 
+        isinstance(value, list)   or
         isinstance(value, set)    or
         isinstance(value, str)):
-        
+
         return True
     else:
-        ### Valid value types include: [str, int, list, float] 
+        ### Valid value types include: [str, int, list, float]
         raise ValueNotTypeFloatIntListSetStr(value)
-    
 
 
-    
+
+
 def container_hasvalue(container, value):
     """Checks whether or not a value appears in a column and returns Boolean.
-    
+
     Parameters
     ----------
     container:    Pandas Series or list
-                A dataframe column or list of values. 
-    
+                A dataframe column or list of values.
+
     value:        Valid values include Int, Str, Float
                 A value for against which the list or series object can be searched
                 to determine its existence.
-    
+
     Returns
     -------
     Boolean:    Returns True if value is in container object, False otherwise
-    
+
     """
     if valid_instance(value):
-        
+
         container = list(container)
-        container = set(container) 
-        
+        container = set(container)
+
         if value in container:
             return True
-        else: 
+        else:
             return False
-        
+
     else:
         return False
 
-
-
-
-
-# class ValueNotTypeIntStrListFloat(ValueError):
-#     """Custom exception for invalid value."""
-#     pass
-
-# def valid_instance(value):
-#     """Checks whether a value is instance of str, int,list or float and returns Boolean.
-    
-#     Parameters
-#     ----------
-#     value:     str int list or float
-#             Any value passed to function such as 8, '8', [8,'8'], or 8.0
-    
-#     Returns
-#     -------
-#     Boolean:   True if value parameter is of type str, int, list or float, 
-#                and returns False otherwise.
-               
-#     Example:
-#     --------
-#     >>>       valid_instance("I'm good!") # returns True
-    
-#     >>>       valid_instance({'name':'Joe Budden'}) # raises Error 
-#     """
-    
-#     if (isinstance(value, str)  or
-#         isinstance(value, int)  or
-#         isinstance(value, list) or 
-#         isinstance(value, float)):
-        
-#         print(True)
-#     else:
-#         ### Valid value types include: [str, int, list, float] 
-#         raise ValueNotTypeIntStrListFloat(value)
-    
 
 
 class ValueNotTypeInt(ValueError):
@@ -219,82 +181,82 @@ class ValueNotTypeInt(ValueError):
 
 def valid_fiscalyear(series, year):
     """Checks whether or not a fiscalyear value appears in a column.
-    
+
     Parameters
     ----------
     series:    Pandas Series object
             A dataframe column against which a check will be performed to determine
             existence of a particular year value.
-    
+
     year:      Int
             A 4 digit fiscal year representing the value that will be searched for
             in the series.
-            
+
     Returns
     --------
     Boolean:  Returns True if year is in series, False if not.
-    
+
     Example
     -------
-    >>> valid_fiscalyear(series=requestDate, year=2017) # returns True if 2017 is in 
+    >>> valid_fiscalyear(series=requestDate, year=2017) # returns True if 2017 is in
                                                           requestDate column
-    
+
     >>> valid_fiscalyear(requestDate, '2030') # returns ValueNotTypeInt error
-    
+
     """
     if isinstance(year, int):
         return container_hasvalue(series, year)
     else:
         ### year parameter expects value of type int
         raise ValueNotTypeInt(year)
-    
-    
-    
+
+
+
 
 def filter_fiscalyear(dframe, column, fiscalyear):
     """Return filtered dataframe with a view of data for a single fiscalyear.
-    
+
     Function uses a fiscalyear parameter to slice a dataframe and provide
     a dataset that excludes data for all fiscalyears except the one passed. It
-    accepts an integer representing a  4-digit year present in the target column. 
-    
+    accepts an integer representing a  4-digit year present in the target column.
+
     Parameters
     ----------
     dframe:      Pandas Dataframe
-    
-    column:      Str  
+
+    column:      Str
             Column name or Pandas Series containing the fiscalyear data
-    
-    fiscalyear:  Int 
-            4 digit year of one of the fiscalyears present in target column. 
-    
+
+    fiscalyear:  Int
+            4 digit year of one of the fiscalyears present in target column.
+
     Returns
     -------
-    Pandas Dataframe  
-    
+    Pandas Dataframe
+
     Example
     -------
     >>> filter_fiscalyear(dframe, 'fy_completed')
-    
+
     >>> filter_fiscalyear(dframe, 'FYear_Requested', 2015)
     """
-    
+
     if valid_fiscalyear(series=dframe[column], year=fiscalyear):
-        
+
         try:
             dataframe = dframe[(dframe[column] == fiscalyear)]
             return dataframe
-        
+
         except Exception as e:
             print(e)  # convert to log
-    
-    else: 
-   
-        print('Function failed to return filtered dataframe. Exited false vailid_fiscalyear') 
-            
-            
+
+    else:
+
+        print('Function failed to return filtered dataframe. Exited false vailid_fiscalyear')
+
+
     #validated_year = validate_fiscalyear(dframe[column], fiscalyear)
-    
+
 #     if validated_year:
 #         try:
 #             dataframe = dframe[(dframe[column] == fiscalyear)]
@@ -302,72 +264,72 @@ def filter_fiscalyear(dframe, column, fiscalyear):
 #         except Exception as e:
 #             print(e)  # convert to log
 #     else:
-#         return validated_year 
+#         return validated_year
 
 
-    
+
 
 def null_nonexistent(series):
     """Performs check to see if a column has null values and returns boolean.
-    
+
     Parameters
     ----------
     series:      Pandas Series
             The column name of a dataframe
-    
+
     Returns
     -------
     Boolean:  Returns True if there are no null values in column, False otherwise.
-    
+
     Example
     -------
     >>> null_nonexistent(dataframe.index) # returns True
-    
+
     """
     if series.isnull().sum() > 0:
         return False
     else:
         return True
-    
+
 
 def ontime(dframe, problemtype_column='prob_type', duration_column='duration'):
-    """Get information by type, on count, average duration and percentage of workorders 
+    """Get information by type, on count, average duration and percentage of workorders
     closed ontime.
-    
+
     Returns tupple of 3 Pandas Series objects with information on the percentage of
-    workorders on time for each problem type. Information returned at each position in 
+    workorders on time for each problem type. Information returned at each position in
     tupple is: 1) number of requests by problem type, 2) mean duration by problem type
     3) percentage of workorders ontime by problem type.
-    
-    Tupple allows for unpacking for elements required to create charts on workorders 
-    closed ontime. For example, values for x, y and size of a scatter plot can be passed 
+
+    Tupple allows for unpacking for elements required to create charts on workorders
+    closed ontime. For example, values for x, y and size of a scatter plot can be passed
     as x = ontime(dframe)[0], y = ontime(dframe)[1], size = ontime(dframe)[2]
-    
+
     Parameters
     ----------
     dframe:              Pandas Dataframe
-                Expects a dataframe that has had all open workorders removed. 
-                Filtering out open workorders removes null values from completion 
-                and duration columns to support calculation of groupby and average 
+                Expects a dataframe that has had all open workorders removed.
+                Filtering out open workorders removes null values from completion
+                and duration columns to support calculation of groupby and average
                 taking on dataframe.
-            
-    problemtype_column:  Str 
+
+    problemtype_column:  Str
                 Name of column containing data on the workorder type category.
-            
-    duration_column:     Str 
+
+    duration_column:     Str
                 Name of datetime type column containing duration for each workorder.
-    
+
     Returns
     -------
-    Tupple:   Return object has 3 items in tupple: 
+    Tupple:   Return object has 3 items in tupple:
              (total_volume_bytype, avg_duration_bytype, percentage_ontime)
-             
+
     Example
     -------
     >>> ontime(df,'prob_type','duration') # if duration has no null values returns tupple
-     
+
     >>> ontime(df, 'ptypes', 'drtn') # if null values present returns string:
-                                       'Check "drtn" column, ensure there are no null values.'    
+                                       'Check "drtn" column, ensure there are no null values.'
     """
     if null_nonexistent(dframe[duration_column]):
         try:
@@ -379,42 +341,42 @@ def ontime(dframe, problemtype_column='prob_type', duration_column='duration'):
             number_ontime_bytype = dframe.groupby(problemtype_column)['ontime'].sum()
             total_volume_bytype = dframe.groupby(problemtype_column)['ontime'].count()
             percentage_ontime = (number_ontime_bytype / total_volume_bytype) * 100
-            
+
             return (total_volume_bytype, avg_duration_bytype, percentage_ontime)
-        
+
         except Exception as e:
             print(e) # convert to log
     else:
         return 'Check "{}" column, ensure there are no null values.'.format(duration_column)
-    
-    
-    
+
+
+
 def remove_open_workorders(dframe, column='date_completed'):
     """Return filtered dataframe removing workorder data missing completion dates.
-    
+
     Parameters
     ----------
     dframe:   Pandas Dataframe
-    
-    column:   Str 
+
+    column:   Str
             Name of datetime object column containing dates of work order
-            completion. 
+            completion.
     Returns
     -------
     Pandas Dataframe
-    
+
     Example
     -------
     >>> remove_open_workorders(dframe)
     """
-    
+
     dataframe = dframe[(dframe[column].notnull())]
     return dataframe
 
 
-    
-    
-    
+
+
+
 
 ################################################################################
 ################################################################################
@@ -457,26 +419,26 @@ def get_data(dataset_name, dataframe_name):
 
 def clean_data(dframe):
     '''Perform reindexing, cleaning and feature generation on dataframe for
-    dashboard. 
-    
+    dashboard.
+
     Parameters
     ----------
     dframe:   Pandas Dataframe
             Expects pandas dataframe returned from the get_data function. The
             data.py module structure separates the request from the preparation
             of the data into two functions: get_data and this clean_data
-    
+
     Returns
     -------
-    Pandas Dataframe:  Returns a new dataframe with releveant Series converted 
+    Pandas Dataframe:  Returns a new dataframe with releveant Series converted
                        to datetime objects, adds relevant features for duration
-                       and resets the index. 
-    
+                       and resets the index.
+
     Example
     -------
     >>> data = get_data(dataset_name='performance_indicators',
                         dataframe_name='public_safety')
-                        
+
         clean_data(dframe=data)
 
     '''
