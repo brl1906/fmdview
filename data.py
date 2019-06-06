@@ -225,7 +225,9 @@ def filter_fiscalyear(dframe, column, fiscalyear):
     dframe:      Pandas Dataframe
 
     column:      Str
-            Column name or Pandas Series containing the fiscalyear data
+            Column name or Pandas Series containing the fiscalyear data. Expects a 
+            column with values similar in format to what is passed to the fiscalyear
+            parameter. For example, a series with values: [2015,2018,2016,2016,2016...]
 
     fiscalyear:  Int
             4 digit year of one of the fiscalyears present in target column.
