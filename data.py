@@ -106,21 +106,21 @@ def get_fiscalyear(column, fiscalyear_start=7):
 
 
 
-class ValueNotTypeIntStrListFloat(ValueError):
-    """Custom exception for invalid value."""
+
+class ValueNotTypeFloatIntListSetStr(ValueError):
     pass
 
 def valid_instance(value):
-    """Checks whether a value is instance of str, int,list or float and returns Boolean.
+    """Checks whether a value is instance of float,int,list,set or str and returns Boolean.
     
     Parameters
     ----------
-    value:     str int list or float
-            Any value passed to function such as 8, '8', [8,'8'], or 8.0
+    value:     float int list set or str
+            Any value passed to function such as 8, '8', [8,'8'], 8.0 or set([8,'8'])
     
     Returns
     -------
-    Boolean:   True if value parameter is of type str, int, list or float, 
+    Boolean:   True if value parameter is of type float, int, list set or str, 
                and returns False otherwise.
                
     Example:
@@ -130,19 +130,126 @@ def valid_instance(value):
     >>>       valid_instance({'name':'Joe Budden'}) # raises Error 
     """
     
-    if (isinstance(value, str)  or
-        isinstance(value, int)  or
-        isinstance(value, list) or 
-        isinstance(value, float)):
+    if (isinstance(value, float)  or
+        isinstance(value, int)    or
+        isinstance(value, list)   or 
+        isinstance(value, set)    or
+        isinstance(value, str)):
         
-        print(True)
+        return True
     else:
         ### Valid value types include: [str, int, list, float] 
-        raise ValueNotTypeIntStrListFloat(value)
+        raise ValueNotTypeFloatIntListSetStr(value)
     
 
 
+    
+def container_hasvalue(container, value):
+    """Checks whether or not a value appears in a column and returns Boolean.
+    
+    Parameters
+    ----------
+    container:    Pandas Series or list
+                A dataframe column or list of values. 
+    
+    value:        Valid values include Int, Str, Float
+                A value for against which the list or series object can be searched
+                to determine its existence.
+    
+    Returns
+    -------
+    Boolean:    Returns True if value is in container object, False otherwise
+    
+    """
+    if valid_instance(value):
+        
+        container = list(container)
+        container = set(container) 
+        
+        if value in container:
+            return True
+        else: 
+            return False
+        
+    else:
+        return False
 
+
+
+
+
+# class ValueNotTypeIntStrListFloat(ValueError):
+#     """Custom exception for invalid value."""
+#     pass
+
+# def valid_instance(value):
+#     """Checks whether a value is instance of str, int,list or float and returns Boolean.
+    
+#     Parameters
+#     ----------
+#     value:     str int list or float
+#             Any value passed to function such as 8, '8', [8,'8'], or 8.0
+    
+#     Returns
+#     -------
+#     Boolean:   True if value parameter is of type str, int, list or float, 
+#                and returns False otherwise.
+               
+#     Example:
+#     --------
+#     >>>       valid_instance("I'm good!") # returns True
+    
+#     >>>       valid_instance({'name':'Joe Budden'}) # raises Error 
+#     """
+    
+#     if (isinstance(value, str)  or
+#         isinstance(value, int)  or
+#         isinstance(value, list) or 
+#         isinstance(value, float)):
+        
+#         print(True)
+#     else:
+#         ### Valid value types include: [str, int, list, float] 
+#         raise ValueNotTypeIntStrListFloat(value)
+    
+
+
+class ValueNotTypeInt(ValueError):
+    pass
+
+def valid_fiscalyear(series, year):
+    """Checks whether or not a fiscalyear value appears in a column.
+    
+    Parameters
+    ----------
+    series:    Pandas Series object
+            A dataframe column against which a check will be performed to determine
+            existence of a particular year value.
+    
+    year:      Int
+            A 4 digit fiscal year representing the value that will be searched for
+            in the series.
+            
+    Returns
+    --------
+    Boolean:  Returns True if year is in series, False if not.
+    
+    Example
+    -------
+    >>> valid_fiscalyear(series=requestDate, year=2017) # returns True if 2017 is in 
+                                                          requestDate column
+    
+    >>> valid_fiscalyear(requestDate, '2030') # returns ValueNotTypeInt error
+    
+    """
+    if isinstance(year, int):
+        return container_hasvalue(series, year)
+    else:
+        ### year parameter expects value of type int
+        raise ValueNotTypeInt(year)
+    
+    
+    
 
 def filter_fiscalyear(dframe, column, fiscalyear):
     """Return filtered dataframe with a view of data for a single fiscalyear.
@@ -171,16 +278,32 @@ def filter_fiscalyear(dframe, column, fiscalyear):
     
     >>> filter_fiscalyear(dframe, 'FYear_Requested', 2015)
     """
-    validated_year = validate_fiscalyear(dframe[column], fiscalyear)
     
-    if validated_year:
+    if valid_fiscalyear(series=dframe[column], year=fiscalyear):
+        
         try:
             dataframe = dframe[(dframe[column] == fiscalyear)]
             return dataframe
+        
         except Exception as e:
             print(e)  # convert to log
-    else:
-        return validated_year 
+    
+    else: 
+   
+        print('Function failed to return filtered dataframe. Exited false vailid_fiscalyear') 
+            
+            
+    #validated_year = validate_fiscalyear(dframe[column], fiscalyear)
+    
+#     if validated_year:
+#         try:
+#             dataframe = dframe[(dframe[column] == fiscalyear)]
+#             return dataframe
+#         except Exception as e:
+#             print(e)  # convert to log
+#     else:
+#         return validated_year 
+
 
     
 
