@@ -257,19 +257,6 @@ def filter_fiscalyear(dframe, column, fiscalyear):
         print('Function failed to return filtered dataframe. Exited false vailid_fiscalyear')
 
 
-    #validated_year = validate_fiscalyear(dframe[column], fiscalyear)
-
-#     if validated_year:
-#         try:
-#             dataframe = dframe[(dframe[column] == fiscalyear)]
-#             return dataframe
-#         except Exception as e:
-#             print(e)  # convert to log
-#     else:
-#         return validated_year
-
-
-
 
 def null_nonexistent(series):
     """Performs check to see if a column has null values and returns boolean.
