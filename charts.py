@@ -526,7 +526,46 @@ initialized because proper parameter was not passed.""")
 
 ################################################################################
 ################################################################################
-
+# ---- opened vs completion gap (backlog) ---- #     
+def linechart_gap_refactor_test(dframe, frequency, id_column='wo_id', completion_column='date_completed'):
+    """
+    """
+    
+    resampled_data = {}
+    traces = []
+    
+    for name, column, color in zip(['opened','completed'],[id_column, completion_column],['#D4395B','#ABCDAB']):
+        
+        frequency_dict = {'A':'Annually','M':'Monthly','W': 'Weekly','D':'Daily'}
+        resampled_data[name] = dframe.resample(frequency)[column].count()
+        
+        traces.append(go.Scatter(
+            x = resampled_data[name].index,
+            y = resampled_data[name].values,
+            name = name, 
+            line = {'color':color,
+                   'width': 5},
+            opacity = .8, 
+            text = ['<b>{} {}</b><br>{}: {:,}'.format(date.strftime('%Y'), date.strftime('%b'), name, val)
+                    for date, val in resampled_data[name].items()],
+            hoverinfo = 'text')
+        )
+        
+    layout = go.Layout(
+        title = 'Work Order Request|Completion Gap<br>Frequency: <b><i>{}</i></b>'.format(frequency_dict[frequency]),
+        autosize = True,
+        legend = {'orientation': 'h'},
+        font = {'color': '#CCCCCC'},
+        titlefont = {'color': '#CCCCCC'},
+        hovermode = 'closest',
+        margin = {'r':35, 'b':10,
+                     'l': 50, 't': 35},
+        paper_bgcolor = '#303939',
+        plot_bgcolor = '#303939'
+                        )
+    fig = {'data': traces, 'layout':layout}
+        
+    return fig
 
 
 
