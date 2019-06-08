@@ -527,7 +527,11 @@ initialized because proper parameter was not passed.""")
 ################################################################################
 ################################################################################
 # ---- opened vs completion gap (backlog) ---- #     
-def linechart_gap_refactor_test(dframe, frequency, id_column='wo_id', completion_column='date_completed'):
+## TODO: add docstring
+## TODO: style hovertext with break lines and bold
+## TODO: move labels horizontal below chart
+
+def open_vs_completed(dframe, frequency='M', id_column='wo_id', completion_column='date_completed'):
     """
     """
     
@@ -548,8 +552,16 @@ def linechart_gap_refactor_test(dframe, frequency, id_column='wo_id', completion
             opacity = .8, 
             text = ['<b>{} {}</b><br>{}: {:,}'.format(date.strftime('%Y'), date.strftime('%b'), name, val)
                     for date, val in resampled_data[name].items()],
-            hoverinfo = 'text')
-        )
+            hoverinfo = 'text'))
+        
+        traces.append(go.Scatter(
+            x = dframe.resample('W')[column].count().rolling(window=4).mean().index,
+            y = dframe.resample('W')[column].count().rolling(window=4).mean().values,
+            name = '4week SMA',
+            line = {'color': color,
+                   'width':2},
+            
+            hoverinfo = 'name+x+y'))
         
     layout = go.Layout(
         title = 'Work Order Request|Completion Gap<br>Frequency: <b><i>{}</i></b>'.format(frequency_dict[frequency]),
@@ -561,8 +573,26 @@ def linechart_gap_refactor_test(dframe, frequency, id_column='wo_id', completion
         margin = {'r':35, 'b':10,
                      'l': 50, 't': 35},
         paper_bgcolor = '#303939',
-        plot_bgcolor = '#303939'
-                        )
+        plot_bgcolor = '#303939',
+        xaxis = dict(
+        rangeselector = dict(
+            buttons = list([
+                dict(count = 6,
+                     label = '6m',
+                     step = 'month',
+                     stepmode = 'backward'),
+                dict(count = 1,
+                    label = 'YTD',
+                    step = 'year',
+                    stepmode = 'todate'),
+                dict(count = 1,
+                    label = '1y',
+                    step = 'year',
+                    stepmode = 'backward'),
+                dict(step = 'all')
+            ])),
+        rangeslider = {'visible':True},
+        type = 'date'))
     fig = {'data': traces, 'layout':layout}
         
     return fig
