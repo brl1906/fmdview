@@ -527,12 +527,49 @@ initialized because proper parameter was not passed.""")
 ################################################################################
 ################################################################################
 # ---- opened vs completion gap (backlog) ---- #     
-## TODO: add docstring
 ## TODO: style hovertext with break lines and bold
 ## TODO: move labels horizontal below chart
 
 def open_vs_completed(dframe, frequency='M', id_column='wo_id', completion_column='date_completed'):
-    """
+    """Generates linechart on gap between number of opened vs completed workorders 
+    for a given frequency to communicate change in the size of workorder backlog.
+    
+    The frequency parameter controls the resampling for the open and closed volume and makes the 
+    function return different views dynamically.  For example, frequency of 'D' will show the number
+    of workorders opened on a given day and the completed on that same day.   While the frequency 
+    value will change the primary traces, a second set of traces also appears on the chart that is 
+    constant and does not change with the changing frequency values. This second set of traces shows
+    the 4 week simple moving average of the number of opened vs completed workorders. 
+    
+    Parameters
+    ----------
+    dframe:       Pandas Dataframe
+            Expects pandas dataframe object with workorder data with datetime index.
+    
+    frequency:    Str (default value is 'M' for monthly)
+            String for a resampling value as part of the pandas api for resampling
+            timeseries data. Valid values include: 'A','Q','M','W','D'.
+    
+    id_column:    Str  (default is 'wo_id' for a column named 'wo_id')
+            Column name in dataframe that contains data on the workorder id, enabling a 
+            count on the workorder ids to provide information on volume for the chart.
+            
+    completion_column:  Str (default is 'date_completed')
+            Column name in dataframe that contains data on when a workorder was completed,
+            enabling a count to provide information on volume for the chart.
+                
+    Returns
+    -------
+    Dict:  Returns a dictionary with keys 'data' and 'layout' corresponding to
+           a Plotly figure object.  {'data':traces, 'layout':layout}
+
+    Example
+    -------
+    >>> open_vs_completed(dframe=dframe, frequency='D', id_column='ids', completion_column='done_date')
+
+    >>> open_vs_completed(dframe, frequency='Q') # retruns chart with quarterly open vs completion data
+    
+    >>> open_vs_completed(dframe)
     """
     
     resampled_data = {}
@@ -540,7 +577,7 @@ def open_vs_completed(dframe, frequency='M', id_column='wo_id', completion_colum
     
     for name, column, color in zip(['opened','completed'],[id_column, completion_column],['#D4395B','#ABCDAB']):
         
-        frequency_dict = {'A':'Annually','M':'Monthly','W': 'Weekly','D':'Daily'}
+        frequency_dict = {'A':'Annually','Q':'Quarterly','M':'Monthly','W': 'Weekly','D':'Daily'}
         resampled_data[name] = dframe.resample(frequency)[column].count()
         
         traces.append(go.Scatter(
