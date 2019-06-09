@@ -527,10 +527,8 @@ initialized because proper parameter was not passed.""")
 ################################################################################
 ################################################################################
 # ---- opened vs completion gap (backlog) ---- #     
-## TODO: style hovertext with break lines and bold
-## TODO: move labels horizontal below chart
-
-def open_vs_completed(dframe, frequency='M', id_column='wo_id', completion_column='date_completed'):
+def open_vs_completed(dframe, frequency='M', id_column='wo_id', 
+                      completion_column='date_completed'):
     """Generates linechart on gap between number of opened vs completed workorders 
     for a given frequency to communicate change in the size of workorder backlog.
     
@@ -633,10 +631,6 @@ def open_vs_completed(dframe, frequency='M', id_column='wo_id', completion_colum
     fig = {'data': traces, 'layout':layout}
         
     return fig
-
-
-
-
 
 ################################################################################
 ################################################################################
