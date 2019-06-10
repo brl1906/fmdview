@@ -640,7 +640,54 @@ def open_vs_completed(dframe, frequency='M', id_column='wo_id',
 ################################################################################
 ################################################################################
 
+## testing  in development 
+## currently throws javascript error propery resize undefined
+# def test__test__requests_volume_distribution(dframe, fiscalyear, fy_column='fiscal_year_requested'):
+#     """
+#     """
+#     dataframe = dframe[(dframe[fy_column] == fiscalyear)]
+#     workorder_count_by_bldng = dataframe.groupby('bl_id')['wo_id'].transform('count')
+#     dataframe['request_volume'] = workorder_count_by_bldng
+#     normalized_size = preprocessing.normalize([dataframe['request_volume']])
+    
+#     data = [
+#         go.Scattermapbox(
+#             lat = dataframe['latitude'],
+#             lon = dataframe['longitude'],
+#             name = '<b>FY{}</b>'.format(fiscalyear),
+#             mode = 'markers',
+#             marker = go.scattermapbox.Marker(
+#                 size = 9,
+#                 color = '#D4395B'),
+#             text = dataframe['bld_name'],
+#             hoverinfo = 'name+text',
+#             opacity = .7
+#         )
+#     ]
 
+#     layout = go.Layout(
+#         title = 'Workorder Distribution & Volume (FY{})'.format(fiscalyear),
+#         font = {'color': '#CCCCCC'},
+#         titlefont = {'color': '#CCCCCC'},
+#         margin = {'t':35, 'b':5, 'l':5, 'r':5},
+#         autosize = True,
+#         hovermode = 'closest',
+#         legend = {'traceorder': 'reversed'},
+#         mapbox = go.layout.Mapbox(
+#             accesstoken = token,
+#             style = 'dark',
+#             center = go.layout.mapbox.Center(
+#                 lat = map_dframe['latitude'].mean(),
+#                 lon = map_dframe['longitude'].mean()
+#             ),
+#             bearing = 0,
+#             pitch = 0,
+#             zoom = 10),
+#         paper_bgcolor = '#303939',
+#     )
+
+#     fig = {'data':data,'layout':layout}
+#     return fig
 
 
 
