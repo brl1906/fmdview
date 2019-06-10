@@ -58,6 +58,8 @@ class Chart():
 ################################################################################
 
 # ---- pct work orders closed on time ---- #
+# TODO: add docstring & move implementation comments of ontime into docstring
+
 def pct_closed_ontime(dframe):
     """
     """
