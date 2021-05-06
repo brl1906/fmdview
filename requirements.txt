@@ -65,7 +65,7 @@ Fiona==1.8.6
 flake8==3.4.0
 Flask==1.0.2
 Flask-Compress==1.4.0
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 future==0.17.1
 geopandas==0.5.0
 gevent==1.4.0
