@@ -55,7 +55,7 @@ decorator==4.4.0
 defusedxml==0.6.0
 descartes==1.1.0
 distributed==1.27.0
-Django==2.2
+Django==2.2.27
 docutils==0.14
 entrypoints==0.3
 et-xmlfile==1.0.1
